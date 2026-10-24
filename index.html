@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ============ 1. METADATA ============ -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Forensic Neuroscientist | Neuroscience, Education &amp; Consultation</title>
+<meta name="description" content="Neuroscience education, training and consultation for attorneys, clinicians, students and curious minds.">
+
+<!-- ============ 2. FONTS ============ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+<!-- ============ 3. TAILWIND (CDN, prototype only) ============ -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- ============ 4. CUSTOM CSS ============ -->
+<style>
+/* --- Design tokens: replace with logo colors once the logo is inspected --- */
+:root{
+  --c-primary:#17324d;   /* deep ink blue */
+  --c-secondary:#2a7f8e; /* clinical teal */
+  --c-accent:#b88a2e;    /* muted brass */
+  --c-bg:#f4f7f9;
+  --c-surface:#ffffff;
+  --c-text:#1c2a38;
+  --c-muted:#566676;
+  --c-border:#d8e0e7;
+  --f-head:'Source Serif 4',Georgia,serif;
+  --f-body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --side-w:17rem;
+  --radius:.5rem;
+}
+/* --- Base --- */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{margin:0;font-family:var(--f-body);color:var(--c-text);background:var(--c-bg);line-height:1.65;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--f-head);color:var(--c-primary);line-height:1.15;margin:0}
+h1{font-size:clamp(2.2rem,5vw,3.75rem);font-weight:700}
+h2{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0}
+.lead{font-size:1.125rem;color:var(--c-muted);max-width:60ch}
+:focus-visible{outline:3px solid var(--c-accent);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.icon{width:1.25rem;height:1.25rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* --- Layout --- */
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--side-w);background:var(--c-primary);color:#fff;display:flex;flex-direction:column;padding:2rem 1.5rem;z-index:40;transition:transform .3s ease}
+.main{margin-left:var(--side-w)}
+.container-x{max-width:68rem;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,3rem)}
+.section{padding-block:clamp(3.5rem,8vw,6rem)}
+.mobile-bar{display:none}
+.overlay{position:fixed;inset:0;background:rgba(10,20,32,.6);opacity:0;visibility:hidden;transition:opacity .3s;z-index:35}
+.overlay.open{opacity:1;visibility:visible}
+@media (max-width:1100px){:root{--side-w:14.5rem}}
+@media (max-width:900px){
+  .sidebar{transform:translateX(-100%);width:min(18rem,85vw)}
+  .sidebar.open{transform:none}
+  .main{margin-left:0}
+  .mobile-bar{display:flex;position:sticky;top:0;z-index:30;align-items:center;justify-content:space-between;background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:.5rem 1rem}
+}
+/* --- Navigation --- */
+.brand{font-family:var(--f-head);font-size:1.35rem;font-weight:700;line-height:1.2;color:#fff;text-decoration:none}
+.nav-link{display:flex;align-items:center;gap:.75rem;min-height:2.75rem;padding:.5rem .75rem;border-radius:var(--radius);color:#cfdbe6;text-decoration:none;font-weight:500;border-left:3px solid transparent;transition:background .2s,color .2s}
+.nav-link:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-link.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:var(--c-accent)}
+.icon-btn{display:inline-grid;place-items:center;width:2.75rem;height:2.75rem;border:1px solid var(--c-border);background:transparent;border-radius:var(--radius);color:var(--c-primary);cursor:pointer}
+.sidebar .icon-btn{color:#fff;border-color:rgba(255,255,255,.3)}
+/* --- Buttons --- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.9rem;padding:.65rem 1.4rem;border-radius:var(--radius);font-weight:600;text-decoration:none;border:2px solid transparent;cursor:pointer;font-family:inherit;font-size:1rem;transition:background .2s,color .2s,border-color .2s}
+.btn-primary{background:var(--c-primary);color:#fff}
+.btn-primary:hover{background:var(--c-secondary)}
+.btn-secondary{background:transparent;color:var(--c-primary);border-color:var(--c-primary)}
+.btn-secondary:hover{background:var(--c-primary);color:#fff}
+.btn-light{background:#fff;color:var(--c-primary)}
+.btn-light:hover{background:var(--c-accent);color:#fff}
+.text-link{display:inline-flex;align-items:center;gap:.4rem;font-weight:600;color:var(--c-secondary);text-decoration:underline;text-underline-offset:4px}
+.text-link:hover{color:var(--c-primary)}
+/* --- Cards --- */
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:1.75rem;display:flex;flex-direction:column;gap:1rem;box-shadow:0 1px 2px rgba(23,50,77,.06)}
+.card-icon{width:3rem;height:3rem;display:grid;place-items:center;border-radius:var(--radius);background:#e5f1f3;color:var(--c-secondary)}
+.video-card{display:block;text-decoration:none;color:inherit}
+.thumb{position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,var(--c-primary),var(--c-secondary));display:grid;place-items:center}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.play{position:relative;width:3.25rem;height:3.25rem;border-radius:50%;background:rgba(255,255,255,.95);color:var(--c-primary);display:grid;place-items:center}
+.video-card:hover .play,.btn-play:hover .play{background:var(--c-accent);color:#fff}
+.btn-play{all:unset;display:block;cursor:pointer;width:100%}
+.btn-play:focus-visible{outline:3px solid var(--c-accent);outline-offset:3px}
+/* --- Hero visual (CSS neural network motif) --- */
+.hero-visual{aspect-ratio:1/1;max-width:26rem;margin-inline:auto;border-radius:var(--radius);background:var(--c-primary);padding:1.5rem}
+.hero-visual svg{width:100%;height:100%}
+.pulse{animation:pulse 3.5s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+/* --- CTA / breadcrumb / modal --- */
+.cta-band{background:var(--c-primary);color:#fff;border-radius:var(--radius);padding:clamp(2rem,5vw,3.5rem)}
+.cta-band h2{color:#fff}
+.crumbs{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.9rem;color:var(--c-muted);list-style:none;padding:0;margin:0}
+.crumbs a{color:var(--c-secondary)}
+.prose-block{max-width:68ch}
+.prose-block p+p{margin-top:1rem}
+.modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(10,20,32,.8)}
+.modal.open{display:flex}
+.modal-box{width:min(56rem,100%);background:#000;border-radius:var(--radius);position:relative}
+.modal-box iframe{width:100%;aspect-ratio:16/9;border:0;display:block;border-radius:var(--radius)}
+.modal-close{position:absolute;top:-3.25rem;right:0;background:#fff}
+.view[hidden]{display:none}
+.ds td,.ds th{padding:.4rem .75rem;border-bottom:1px solid var(--c-border);text-align:left;font-size:.9rem}
+.swatch{display:inline-block;width:1rem;height:1rem;border-radius:3px;vertical-align:-2px;margin-right:.4rem;border:1px solid var(--c-border)}
+</style>
+</head>
+<body>
+
+<!-- Inline SVG icon sprite (Lucide-style) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M6 21h12M5 7h14M5 7l-3 7a3 3 0 006 0zM19 7l-3 7a3 3 0 006 0z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 21V5M9 7h6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.5 7.2L3 21l1.8-6A8 8 0 1121 12z"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="M16 10l6-3v10l-6-3"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+</svg>
+
+<a href="#main" class="sr-only focus:not-sr-only" style="position:absolute;z-index:100;background:#fff;padding:.5rem 1rem">Skip to content</a>
+
+<!-- ============ 5. SIDEBAR & MOBILE NAVIGATION ============ -->
+<div class="mobile-bar">
+  <a href="#home" class="brand" style="color:var(--c-primary);font-size:1.05rem" data-nav>The Forensic Neuroscientist</a>
+  <button class="icon-btn" id="menuOpen" aria-label="Open navigation menu" aria-controls="sidebar" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar" aria-label="Site navigation">
+  <div class="flex items-start justify-between gap-2 mb-10">
+    <a href="#home" class="brand" data-nav>The Forensic Neuroscientist</a>
+    <button class="icon-btn md-hide" id="menuClose" aria-label="Close navigation menu" style="display:none"><svg class="icon"><use href="#i-x"/></svg></button>
+  </div>
+  <nav aria-label="Primary">
+    <ul class="list-none p-0 m-0 flex flex-col gap-1">
+      <li><a class="nav-link" href="#home" data-nav data-spy="home"><svg class="icon"><use href="#i-home"/></svg>Home</a></li>
+      <li><a class="nav-link" href="#about" data-nav data-spy="about"><svg class="icon"><use href="#i-user"/></svg>About</a></li>
+      <li><a class="nav-link" href="#services" data-nav data-spy="services"><svg class="icon"><use href="#i-scale"/></svg>Services</a></li>
+      <li><a class="nav-link" href="#training" data-nav data-spy="training"><svg class="icon"><use href="#i-book"/></svg>Training</a></li>
+      <li><a class="nav-link" href="#consultation" data-nav data-spy="consultation"><svg class="icon"><use href="#i-chat"/></svg>Consultation</a></li>
+      <li><a class="nav-link" href="#videos" data-nav data-spy="videos"><svg class="icon"><use href="#i-video"/></svg>Videos</a></li>
+    </ul>
+  </nav>
+  <div class="mt-auto pt-8">
+    <a href="#contact" class="btn btn-light w-full" data-nav><svg class="icon"><use href="#i-mail"/></svg>Contact us</a>
+  </div>
+</aside>
+
+<main class="main" id="main" tabindex="-1">
+
+<!-- ============ 6. HOMEPAGE VIEW ============ -->
+<div class="view" id="view-home">
+
+  <!-- A. Hero -->
+  <section id="home" class="section">
+    <div class="container-x grid gap-12 lg:grid-cols-2 items-center">
+      <div class="flex flex-col gap-6">
+        <p class="font-semibold" style="color:var(--c-secondary)">The Forensic Neuroscientist</p>
+        <h1>Where Neuroscience Meets Forensic Understanding</h1>
+        <p class="lead">Clear, evidence-minded education and consultation that helps attorneys, clinicians and students understand how brain science informs legal and clinical questions.</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#services" class="btn btn-primary" data-nav>Explore Our Services</a>
+          <button type="button" class="btn btn-secondary" data-video="uGySNlWnPRk" data-title="Introduction to The Forensic Neuroscientist"><svg class="icon"><use href="#i-play"/></svg>Watch Introduction</button>
+        </div>
+      </div>
+      <figure class="hero-visual m-0" role="img" aria-label="Abstract illustration of connected neurons in a network">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <g stroke="#2a7f8e" stroke-width="1.2" fill="none">
+            <path d="M30 60L80 40L130 70L170 45M80 40L70 100L130 70M70 100L40 150L110 140L130 70M110 140L165 130L170 45M165 130L130 70"/>
+          </g>
+          <g fill="#fff"><circle cx="30" cy="60" r="5"/><circle cx="80" cy="40" r="7"/><circle cx="130" cy="70" r="8"/><circle cx="70" cy="100" r="6"/><circle cx="40" cy="150" r="5"/><circle cx="110" cy="140" r="7"/></g>
+          <g fill="#b88a2e"><circle class="pulse" cx="170" cy="45" r="6"/><circle class="pulse" cx="165" cy="130" r="6"/></g>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <!-- B. About snapshot -->
+  <section class="section" style="background:var(--c-surface);border-block:1px solid var(--c-border)" aria-labelledby="about-h">
+    <div class="container-x grid gap-8 md:grid-cols-5">
+      <h2 id="about-h" class="md:col-span-2">Brain science, explained for real-world decisions</h2>
+      <div class="md:col-span-3 flex flex-col gap-4">
+        <p class="lead">The Forensic Neuroscientist brings together neuroscience, forensic understanding, professional education and consultation in one place.</p>
+        <p class="lead">The goal is simple: make complex science accessible and useful, whether you are preparing a case, supporting clients, or simply curious.</p>
+        <a href="#about" class="text-link" data-nav>Learn more <svg class="icon"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- C. Services, Training, Consultation (placeholder copy) -->
+  <section class="section" aria-labelledby="svc-h">
+    <div class="container-x">
+      <h2 id="svc-h" class="mb-10">How we can help</h2>
+      <div class="grid gap-6 md:grid-cols-3">
+        <article class="card" id="services">
+          <div class="card-icon"><svg class="icon"><use href="#i-scale"/></svg></div>
+          <h3>Services</h3>
+          <p class="text-[var(--c-muted)]">Neuroscience-informed support for forensic and legal contexts. Service details will be confirmed with the client.</p>
+          <a href="#contact" class="text-link mt-auto" data-nav>Ask about services <svg class="icon"><use href="#i-arrow"/></svg></a>
+        </article>
+        <article class="card" id="training">
+          <div class="card-icon"><svg class="icon"><use href="#i-book"/></svg></div>
+          <h3>Education &amp; Training</h3>
+          <p class="text-[var(--c-muted)]">Learning for professionals and students who want to understand the brain in a forensic setting. Programs to be confirmed.</p>
+          <a href="#contact" class="text-link mt-auto" data-nav>Ask about training <svg class="icon"><use href="#i-arrow"/></svg></a>
+        </article>
+        <article class="card" id="consultation">
+          <div class="card-icon"><svg class="icon"><use href="#i-chat"/></svg></div>
+          <h3>Consultation</h3>
+          <p class="text-[var(--c-muted)]">A conversation about your question, your goals and the best way to approach them. Format and availability to be confirmed.</p>
+          <a href="#contact" class="text-link mt-auto" data-nav>Request a consultation <svg class="icon"><use href="#i-arrow"/></svg></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- D. Featured videos -->
+  <section id="videos" class="section" style="background:var(--c-surface);border-block:1px solid var(--c-border)" aria-labelledby="vid-h">
+    <div class="container-x">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <h2 id="vid-h">Featured videos</h2>
+        <a class="btn btn-secondary" href="https://www.youtube.com/@TheForensicNeuroscientist" target="_blank" rel="noopener noreferrer">Visit Our YouTube Channel<span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+      <div class="grid gap-8 lg:grid-cols-5 items-center mb-10">
+        <div class="lg:col-span-3">
+          <button type="button" class="btn-play" data-video="uGySNlWnPRk" data-title="Introduction to The Forensic Neuroscientist" aria-label="Play featured video: Introduction to The Forensic Neuroscientist">
+            <span class="thumb"><img src="https://img.youtube.com/vi/uGySNlWnPRk/hqdefault.jpg" alt="Thumbnail of the channel introduction video" loading="lazy"><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></span>
+          </button>
+        </div>
+        <div class="lg:col-span-2 flex flex-col gap-3">
+          <h3>Introduction to The Forensic Neuroscientist</h3>
+          <p class="text-[var(--c-muted)]">Start here for an overview of the channel and what it covers.</p>
+        </div>
+      </div>
+      <!-- Sample cards: replace titles, thumbnails and links with real videos -->
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <a class="video-card" href="https://www.youtube.com/@TheForensicNeuroscientist" target="_blank" rel="noopener noreferrer" aria-label="Sample video 1: Video title placeholder, opens the YouTube channel in a new tab">
+          <span class="thumb"><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></span>
+          <h3 class="mt-3 text-lg">Sample video title one</h3><p class="text-sm text-[var(--c-muted)]">Placeholder, replace with a real video.</p>
+        </a>
+        <a class="video-card" href="https://www.youtube.com/@TheForensicNeuroscientist" target="_blank" rel="noopener noreferrer" aria-label="Sample video 2: Video title placeholder, opens the YouTube channel in a new tab">
+          <span class="thumb" style="background:linear-gradient(135deg,var(--c-secondary),var(--c-primary))"><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></span>
+          <h3 class="mt-3 text-lg">Sample video title two</h3><p class="text-sm text-[var(--c-muted)]">Placeholder, replace with a real video.</p>
+        </a>
+        <a class="video-card" href="https://www.youtube.com/@TheForensicNeuroscientist" target="_blank" rel="noopener noreferrer" aria-label="Sample video 3: Video title placeholder, opens the YouTube channel in a new tab">
+          <span class="thumb"><span class="play"><svg class="icon"><use href="#i-play"/></svg></span></span>
+          <h3 class="mt-3 text-lg">Sample video title three</h3><p class="text-sm text-[var(--c-muted)]">Placeholder, replace with a real video.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- F. Final CTA -->
+  <section id="contact" class="section">
+    <div class="container-x">
+      <div class="cta-band flex flex-col gap-5 items-start">
+        <h2>Ready to explore services, training or consultation?</h2>
+        <p style="color:#cfdbe6;max-width:56ch">Contact details are being finalised. In the meantime, watch the introduction to see how The Forensic Neuroscientist approaches this work.</p>
+        <div class="flex flex-wrap gap-3">
+          <button type="button" class="btn btn-light" data-video="uGySNlWnPRk" data-title="Introduction to The Forensic Neuroscientist">Watch Introduction</button>
+          <a class="btn" style="border-color:#fff;color:#fff" href="https://www.youtube.com/@TheForensicNeuroscientist" target="_blank" rel="noopener noreferrer">Visit YouTube<span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <!-- TODO: add client's real email / booking URL here -->
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ 7. INTERNAL PAGE TEMPLATE (About example) ============ -->
+<div class="view" id="view-about" hidden>
+  <div class="section">
+    <div class="container-x">
+      <nav aria-label="Breadcrumb"><ol class="crumbs"><li><a href="#home" data-nav>Home</a></li><li aria-hidden="true">/</li><li aria-current="page">About</li></ol></nav>
+      <header class="mt-6 mb-10 flex flex-col gap-4"><h1>About</h1><p class="lead">An example internal page. Reuse this structure for Services, Training and Consultation pages.</p></header>
+      <div class="grid gap-10 lg:grid-cols-3">
+        <div class="lg:col-span-2 prose-block flex flex-col gap-8">
+          <section aria-labelledby="mission-h"><h2 id="mission-h" class="mb-3">Our mission</h2>
+            <p>The Forensic Neuroscientist aims to make neuroscience understandable and useful in forensic contexts, through education, training and consultation.</p>
+            <p>This is placeholder text. Replace it with the client's approved biography, credentials and history.</p></section>
+          <section aria-labelledby="who-h"><h2 id="who-h" class="mb-3">Who it is for</h2>
+            <p>Attorneys, clinicians, students and curious visitors who want clear explanations of how the brain relates to behaviour, evidence and decision-making.</p></section>
+        </div>
+        <aside class="card h-fit" aria-label="Related call to action">
+          <h3>Have a question?</h3>
+          <p class="text-[var(--c-muted)]">Learn how services, training or consultation could support you.</p>
+          <a href="#services" class="btn btn-primary" data-nav>Explore Our Services</a>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 9. FOOTER ============ -->
+<footer style="background:var(--c-primary);color:#cfdbe6" class="py-10">
+  <div class="container-x grid gap-8 md:grid-cols-3">
+    <div><p class="brand">The Forensic Neuroscientist</p><p class="text-sm mt-2">Neuroscience, education and consultation.</p></div>
+    <nav aria-label="Footer"><ul class="list-none p-0 m-0 flex flex-col gap-2 text-sm">
+      <li><a href="#home" data-nav class="underline">Home</a></li><li><a href="#about" data-nav class="underline">About</a></li><li><a href="#services" data-nav class="underline">Services</a></li><li><a href="#videos" data-nav class="underline">Videos</a></li></ul></nav>
+    <div class="text-sm flex flex-col gap-2">
+      <a class="underline" href="https://www.youtube.com/@TheForensicNeuroscientist" target="_blank" rel="noopener noreferrer">YouTube channel<span class="sr-only"> (opens in a new tab)</span></a>
+      <!-- Space for future contact and social links -->
+      <p>&copy; <span id="year"></span> The Forensic Neuroscientist. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Design-system reference (kept compact, not part of the public design) -->
+<details class="container-x py-6 text-sm" id="design-system">
+  <summary class="cursor-pointer font-semibold" style="color:var(--c-muted)">Developer reference: design system</summary>
+  <table class="ds mt-3 w-full max-w-3xl">
+    <tr><th>Colors</th><td><span class="swatch" style="background:var(--c-primary)"></span>primary <span class="swatch" style="background:var(--c-secondary)"></span>secondary <span class="swatch" style="background:var(--c-accent)"></span>accent <span class="swatch" style="background:var(--c-bg)"></span>bg <span class="swatch" style="background:var(--c-surface)"></span>surface. Temporary palette; replace the CSS variables after inspecting the logo.</td></tr>
+    <tr><th>Fonts</th><td>Source Serif 4 (headings: h1 clamp 2.2–3.75rem, h2 1.7–2.4rem, h3 1.3rem), Public Sans (body)</td></tr>
+    <tr><th>Spacing</th><td>.section = clamp(3.5–6rem) vertical; .container-x max 68rem</td></tr>
+    <tr><th>Buttons</th><td>.btn-primary, .btn-secondary, .btn-light, .text-link</td></tr>
+    <tr><th>Cards</th><td>.card (service), .video-card + .thumb (video)</td></tr>
+    <tr><th>Breakpoints</th><td>&le;900px mobile drawer; &le;1100px narrower sidebar; Tailwind md 768px, lg 1024px for grids</td></tr>
+  </table>
+</details>
+</main>
+
+<!-- ============ 8. VIDEO MODAL ============ -->
+<div class="modal" id="videoModal" role="dialog" aria-modal="true" aria-labelledby="videoTitle" aria-hidden="true">
+  <div class="modal-box">
+    <h2 id="videoTitle" class="sr-only">Video</h2>
+    <button type="button" class="icon-btn modal-close" id="videoClose" aria-label="Close video"><svg class="icon"><use href="#i-x"/></svg></button>
+    <div id="videoFrame"></div>
+  </div>
+</div>
+
+<!-- ============ 10. JAVASCRIPT ============ -->
+<script>
+(function(){
+  const $ = (s, c=document) => c.querySelector(s), $$ = (s, c=document) => [...c.querySelectorAll(s)];
+  const sidebar = $('#sidebar'), overlay = $('#overlay'), openBtn = $('#menuOpen'), closeBtn = $('#menuClose');
+  const mq = window.matchMedia('(max-width:900px)');
+  const views = { home: $('#view-home'), about: $('#view-about') };
+  const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  $('#year').textContent = new Date().getFullYear();
+
+  /* Mobile drawer */
+  function setMenu(open){
+    sidebar.classList.toggle('open', open && mq.matches);
+    overlay.classList.toggle('open', open && mq.matches);
+    openBtn.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open && mq.matches ? 'hidden' : '';
+    if (open) closeBtn.focus(); else if (mq.matches) openBtn.focus();
+  }
+  function syncMenuMode(){
+    closeBtn.style.display = mq.matches ? 'inline-grid' : 'none';
+    if (mq.matches) { sidebar.setAttribute('aria-hidden', !sidebar.classList.contains('open')); sidebar.inert = !sidebar.classList.contains('open'); }
+    else { sidebar.removeAttribute('aria-hidden'); sidebar.inert = false; overlay.classList.remove('open'); document.body.style.overflow=''; }
+  }
+  openBtn.addEventListener('click', () => { sidebar.inert=false; sidebar.removeAttribute('aria-hidden'); setMenu(true); });
+  closeBtn.addEventListener('click', () => { setMenu(false); syncMenuMode(); });
+  overlay.addEventListener('click', () => { setMenu(false); syncMenuMode(); });
+  mq.addEventListener('change', syncMenuMode); syncMenuMode();
+
+  /* View switching + smooth scrolling */
+  function go(hash, push=true){
+    const id = (hash || '#home').slice(1);
+    const view = id === 'about' ? 'about' : 'home';
+    Object.entries(views).forEach(([k,el]) => el.hidden = k !== view);
+    if (push) history.pushState(null,'','#'+id);
+    const target = view === 'about' ? $('#main') : document.getElementById(id) || $('#home');
+    target.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+    setActive(view === 'about' ? 'about' : id);
+  }
+  $$('[data-nav]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault(); const wasOpen = sidebar.classList.contains('open');
+    if (wasOpen) { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow=''; syncMenuMode(); }
+    go(a.getAttribute('href'));
+  }));
+  window.addEventListener('popstate', () => go(location.hash, false));
+
+  /* Active link state (scroll spy on homepage) */
+  function setActive(id){
+    $$('[data-spy]').forEach(a => { const on = a.dataset.spy === id; a.classList.toggle('active', on); on ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'); });
+  }
+  const spyIds = ['home','services','training','consultation','videos'];
+  const io = new IntersectionObserver(es => {
+    if (views.home.hidden) return;
+    es.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+  }, { rootMargin:'-35% 0px -55% 0px' });
+  spyIds.forEach(id => io.observe(document.getElementById(id)));
+  setActive('home');
+
+  /* Video modal */
+  const modal = $('#videoModal'), frame = $('#videoFrame'), vClose = $('#videoClose'); let lastFocus = null;
+  function openVideo(id, title){
+    lastFocus = document.activeElement;
+    $('#videoTitle').textContent = title || 'Video';
+    const f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&rel=0';
+    f.title = title || 'YouTube video'; f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture'; f.allowFullscreen = true;
+    frame.replaceChildren(f);
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; vClose.focus();
+  }
+  function closeVideo(){
+    frame.replaceChildren(); /* removing the iframe stops playback */
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+    if (lastFocus) lastFocus.focus();
+  }
+  $$('[data-video]').forEach(b => b.addEventListener('click', () => openVideo(b.dataset.video, b.dataset.title)));
+  vClose.addEventListener('click', closeVideo);
+  modal.addEventListener('click', e => { if (e.target === modal) closeVideo(); });
+
+  /* Keyboard: Escape closes modal/menu; Tab is trapped inside the modal */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { if (modal.classList.contains('open')) closeVideo(); else if (sidebar.classList.contains('open')) { setMenu(false); syncMenuMode(); } }
+    if (e.key === 'Tab' && modal.classList.contains('open')) {
+      const f = $$('button, iframe, a[href]', modal); if (!f.length) return;
+      const first = f[0], last = f[f.length-1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  if (location.hash) go(location.hash, false);
+})();
+</script>
+</body>
+</html>
